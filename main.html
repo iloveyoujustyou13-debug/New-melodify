@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Melodify · Music</title>
+    <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/iloveyoujustyou13-debug/melodify--music@main/Ff_Arpon_cover.png" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800;14..32,900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+    <!-- ===== HEADER ===== -->
+    <header class="header" id="appHeader">
+        <a href="index.html" class="header-brand">
+            <img src="https://cdn.jsdelivr.net/gh/iloveyoujustyou13-debug/melodify--music@main/Ff_Arpon_cover.png" alt="Melodify" />
+            <span class="brand-text">Melodify</span>
+        </a>
+
+        <div class="header-controls">
+            <div class="search-filter">
+                <div class="search-wrapper">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" id="searchInput" placeholder="Search songs, artists..." autocomplete="off" />
+                    <div class="autocomplete-dropdown" id="autocompleteDropdown"></div>
+                </div>
+                <select id="categoryFilter"><option value="all">All</option></select>
+            </div>
+            <div class="sort-wrapper">
+                <select id="sortSelect">
+                    <option value="recent">Recent</option>
+                    <option value="title">Title A–Z</option>
+                    <option value="artist">Artist A–Z</option>
+                    <option value="likes">Most Liked</option>
+                    <option value="views">Most Viewed</option>
+                </select>
+            </div>
+            <button class="favorites-toggle" id="favoritesToggle">
+                <i class="fas fa-heart"></i>
+                <span class="badge" id="favCount">0</span>
+            </button>
+        </div>
+
+        <div class="header-actions">
+            <button class="btn-icon theme-toggle" id="themeToggle"><i class="fas fa-moon"></i></button>
+            <button class="btn btn-sm" id="playlistToggleBtn"><i class="fas fa-heart"></i> Playlists</button>
+            <button class="btn btn-sm" id="adminToggleBtn"><i class="fas fa-user-shield"></i> Admin</button>
+            <div class="user-profile" id="userProfile" style="display:none;">
+                <span class="avatar-placeholder" id="userAvatarPlaceholder">U</span>
+                <img class="avatar" id="userAvatarImg" style="display:none;" alt="avatar" />
+                <span class="user-name" id="userDisplayName">User</span>
+                <span class="dropdown-arrow"><i class="fas fa-chevron-down"></i></span>
+                <div class="user-dropdown" id="userDropdown">
+                    <button class="dropdown-item" id="dropdownProfile"><i class="fas fa-user"></i> Profile</button>
+                    <button class="dropdown-item" id="dropdownPlaylists"><i class="fas fa-heart"></i> My Playlists</button>
+                    <div class="dropdown-divider"></div>
+                    <button class="dropdown-item logout-item" id="dropdownLogout"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                </div>
+            </div>
+            <button class="btn btn-sm btn-primary" id="authBtn"><i class="fas fa-user-plus"></i> Sign Up</button>
+            <button class="btn btn-sm" id="shortcutsToggleBtn"><i class="fas fa-keyboard"></i></button>
+        </div>
+    </header>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <main class="container">
+
+        <!-- Recently Played -->
+        <div id="recentlyPlayedSection" class="recently-played-section">
+            <div class="rec-header">
+                <div class="rec-left"><i class="fas fa-clock-rotate-left"></i><h2>Recently Played</h2><span class="rec-badge">last 20</span></div>
+            </div>
+            <div id="recentGridContainer">
+                <div id="recentGrid" class="recent-grid"></div>
+                <div id="recentEmpty" class="recent-empty"><i class="fas fa-headphones"></i><p>Start listening to see your recently played songs here.</p></div>
+            </div>
+        </div>
+
+        <!-- Recommendations -->
+        <div id="recommendationsSection" class="recommendations-section">
+            <div class="rec-header">
+                <div class="rec-left"><i class="fas fa-fire"></i><h2>Made For You</h2><span class="rec-badge">recommended</span></div>
+                <button class="clear-history-btn" id="clearHistoryBtn"><i class="fas fa-undo-alt"></i> Reset</button>
+            </div>
+            <div class="rec-sub" id="recSub">We analyse your favourites to suggest songs you'll love.</div>
+            <div id="recGridContainer">
+                <div id="recGrid" class="rec-grid"></div>
+                <div id="recEmpty" class="rec-empty hidden"><i class="fas fa-headphones"></i><p>Start listening to get personalised recommendations!</p></div>
+            </div>
+        </div>
+
+        <!-- Song Grid -->
+        <div id="songGridContainer">
+            <div class="song-grid" id="songGrid"></div>
+            <div id="loadingSpinner" class="spinner"></div>
+            <div id="emptyState" class="empty-state hidden"><i class="fas fa-music"></i><h3>No songs found</h3><p>Try adjusting your search or filter.</p></div>
+        </div>
+
+    </main>
+
+    <!-- ===== EXPANDED PLAYER ===== -->
+    <div class="expanded-player-overlay" id="expandedPlayerOverlay">
+        <div class="expanded-player">
+            <button class="close-expanded" id="closeExpandedPlayer"><i class="fas fa-times"></i></button>
+            <img class="exp-cover" id="expCover" src="https://placehold.co/400x400/181818/333?text=🎵" alt="Album art" />
+            <div class="exp-meta">
+                <div class="exp-title" id="expTitle">No song selected</div>
+                <div class="exp-artist" id="expArtist">—</div>
+            </div>
+            <div class="exp-progress">
+                <span class="time" id="expCurrentTime">0:00</span>
+                <input type="range" id="expSeek" min="0" max="100" value="0" />
+                <span class="time" id="expDuration">0:00</span>
+            </div>
+            <div class="exp-controls">
+                <button class="btn-icon" id="expPrev"><i class="fas fa-step-backward"></i></button>
+                <button class="btn-icon play-pause" id="expPlayPause"><i class="fas fa-play"></i></button>
+                <button class="btn-icon" id="expNext"><i class="fas fa-step-forward"></i></button>
+            </div>
+            <div class="exp-actions">
+                <button class="btn-icon" id="expLikeBtn"><i class="fas fa-heart"></i></button>
+                <button class="btn-icon" id="expShuffleBtn"><i class="fas fa-random"></i></button>
+                <button class="btn-icon" id="expRepeatBtn"><i class="fas fa-repeat"></i></button>
+                <button class="btn-icon" id="expQueueBtn"><i class="fas fa-list"></i></button>
+                <button class="btn-icon" id="expDownloadBtn"><i class="fas fa-download"></i></button>
+                <button class="btn-icon" id="expShareBtn"><i class="fas fa-share-alt"></i></button>
+            </div>
+            <div class="exp-lyrics" id="expLyrics"><div class="lyrics-placeholder">🎵 No lyrics available for this song.</div></div>
+        </div>
+    </div>
+
+    <!-- ===== QUEUE PANEL ===== -->
+    <div class="queue-overlay" id="queueOverlay">
+        <div class="queue-panel">
+            <div class="queue-handle"></div>
+            <div class="queue-header"><h3><i class="fas fa-list"></i> Queue</h3><button class="queue-close" id="closeQueuePanel"><i class="fas fa-times"></i></button></div>
+            <div id="queueList"><div class="queue-empty"><i class="fas fa-music"></i><p>Queue is empty</p></div></div>
+        </div>
+    </div>
+
+    <!-- ===== PLAYLIST OVERLAY ===== -->
+    <div class="playlist-overlay" id="playlistOverlay">
+        <div class="playlist-panel">
+            <div class="panel-header"><h2><i class="fas fa-heart"></i> My Playlists</h2><button class="close-panel" id="closePlaylistPanel"><i class="fas fa-times"></i></button></div>
+            <div id="playlistMainView">
+                <div class="create-playlist-form">
+                    <input type="text" id="newPlaylistName" placeholder="New playlist name..." />
+                    <button class="btn btn-primary" id="createPlaylistBtn"><i class="fas fa-plus"></i> Create</button>
+                </div>
+                <div id="playlistList" class="playlist-list"></div>
+            </div>
+            <div id="playlistDetailView" class="playlist-detail">
+                <button class="back-btn" id="backFromDetail"><i class="fas fa-arrow-left"></i> Back</button>
+                <h3 id="detailPlaylistName"></h3>
+                <div id="detailSongsList" class="detail-songs"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== ADD TO PLAYLIST POPUP ===== -->
+    <div class="add-to-playlist-popup" id="addToPlaylistPopup">
+        <div class="popup-title"><i class="fas fa-plus-circle"></i> Add to playlist</div>
+        <div class="popup-list" id="popupPlaylistList"></div>
+        <div class="popup-create">
+            <input type="text" id="popupNewPlaylistName" placeholder="New playlist..." />
+            <button class="btn btn-primary btn-sm" id="popupCreatePlaylistBtn"><i class="fas fa-plus"></i></button>
+        </div>
+    </div>
+
+    <!-- ===== SHARE MODAL ===== -->
+    <div class="share-overlay" id="shareOverlay">
+        <div class="share-panel">
+            <div class="share-header"><h3><i class="fas fa-share-alt"></i> Share Song</h3><button class="close-share" id="closeSharePanel"><i class="fas fa-times"></i></button></div>
+            <div class="share-song-info" id="shareSongInfo">
+                <img id="shareThumb" src="https://placehold.co/48x48/181818/333?text=🎵" alt="cover" />
+                <div class="share-meta"><div class="share-title" id="shareTitle">Song Title</div><div class="share-artist" id="shareArtist">Artist</div></div>
+            </div>
+            <div class="share-buttons">
+                <button class="btn" id="shareCopyLink"><i class="fas fa-link"></i> Copy</button>
+                <button class="btn" id="shareTwitter"><i class="fab fa-twitter"></i> Twitter</button>
+                <button class="btn" id="shareWhatsApp"><i class="fab fa-whatsapp"></i> WhatsApp</button>
+                <button class="btn" id="shareTelegram"><i class="fab fa-telegram"></i> Telegram</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== SLEEP TIMER ===== -->
+    <div class="sleep-timer-overlay" id="sleepTimerOverlay">
+        <div class="st-title"><i class="fas fa-moon"></i> Sleep Timer</div>
+        <div class="st-options">
+            <button class="st-opt" data-minutes="5">5m</button>
+            <button class="st-opt" data-minutes="10">10m</button>
+            <button class="st-opt" data-minutes="15">15m</button>
+            <button class="st-opt" data-minutes="30">30m</button>
+            <button class="st-opt" data-minutes="45">45m</button>
+            <button class="st-opt" data-minutes="60">60m</button>
+        </div>
+        <div class="st-status" id="stStatus">⏱️ Timer off</div>
+        <button class="st-cancel" id="stCancel">Cancel timer</button>
+    </div>
+
+    <!-- ===== KEYBOARD SHORTCUTS ===== -->
+    <div class="shortcuts-overlay" id="shortcutsOverlay">
+        <div class="shortcuts-panel">
+            <div class="panel-header"><h2><i class="fas fa-keyboard"></i> Keyboard Shortcuts</h2><button class="close-panel" id="closeShortcutsPanel"><i class="fas fa-times"></i></button></div>
+            <div class="shortcuts-grid">
+                <div class="shortcut-item"><span class="key">Space</span><span class="action">Play / Pause</span></div>
+                <div class="shortcut-item"><span class="key">→</span><span class="action">Seek forward 10s</span></div>
+                <div class="shortcut-item"><span class="key">←</span><span class="action">Seek backward 10s</span></div>
+                <div class="shortcut-item"><span class="key">↑</span><span class="action">Volume up</span></div>
+                <div class="shortcut-item"><span class="key">↓</span><span class="action">Volume down</span></div>
+                <div class="shortcut-item"><span class="key">F</span><span class="action">Like / Unlike song</span></div>
+                <div class="shortcut-item"><span class="key">Q</span><span class="action">Toggle Queue</span></div>
+                <div class="shortcut-item"><span class="key">E</span><span class="action">Toggle Expanded Player</span></div>
+                <div class="shortcut-item"><span class="key">? / Ctrl+/</span><span class="action">Show shortcuts</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== PLAYER ===== -->
+    <div class="player" id="player">
+        <div class="player-info" id="playerInfoTrigger">
+            <div class="media-container" id="playerMediaContainer">
+                <img id="playerThumb" src="https://placehold.co/100x100/181818/333?text=🎵" alt="Album art" />
+            </div>
+            <div class="meta">
+                <div class="title" id="playerTitle">No song selected</div>
+                <div class="artist" id="playerArtist">—</div>
+            </div>
+        </div>
+        <div class="player-controls">
+            <button class="btn-icon shuffle-btn" id="playerShuffle"><i class="fas fa-random"></i></button>
+            <button class="btn-icon" id="playerPrev"><i class="fas fa-step-backward"></i></button>
+            <button class="btn-icon play-pause" id="playerPlayPause"><i class="fas fa-play"></i></button>
+            <button class="btn-icon" id="playerNext"><i class="fas fa-step-forward"></i></button>
+            <button class="btn-icon repeat-btn" id="playerRepeat"><i class="fas fa-repeat"></i></button>
+        </div>
+        <div class="player-progress">
+            <span class="time" id="playerCurrentTime">0:00</span>
+            <input type="range" id="playerSeek" min="0" max="100" value="0" />
+            <span class="time" id="playerDuration">0:00</span>
+        </div>
+        <div class="player-volume">
+            <button class="btn-icon" id="playerVolumeToggle"><i class="fas fa-volume-up"></i></button>
+            <input type="range" id="playerVolume" min="0" max="1" step="0.01" value="0.8" />
+        </div>
+        <div class="player-actions">
+            <button class="btn-icon like-btn-player" id="playerLikeBtn"><i class="fas fa-heart"></i></button>
+            <button class="btn-icon sleep-btn" id="playerSleepBtn"><i class="fas fa-moon"></i></button>
+            <button class="btn-icon share-btn" id="playerShareBtn"><i class="fas fa-share-alt"></i></button>
+            <button class="btn-icon queue-toggle-btn" id="playerQueueToggle"><i class="fas fa-list"></i></button>
+            <button class="btn-icon" id="playerDownloadBtn"><i class="fas fa-download"></i></button>
+            <button class="btn-icon" id="playerAddToPlaylistBtn"><i class="fas fa-plus"></i></button>
+        </div>
+    </div>
+
+    <!-- ===== TOAST ===== -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- ===== AUDIO ===== -->
+    <audio id="audioElement" preload="metadata"></audio>
+
+    <script type="importmap">
+        {
+            "imports": {
+                "firebase/app": "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js",
+                "firebase/auth": "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js",
+                "firebase/firestore": "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"
+            }
+        }
+    </script>
+    <script src="script.js"></script>
+</body>
+</html>
