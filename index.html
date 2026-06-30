@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Melodify · Music</title>
+    <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/iloveyoujustyou13-debug/melodify--music@main/Ff_Arpon_cover.png" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800;14..32,900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+    <style>
+        /* Landing page specific styles */
+        .landing-hero {
+            min-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem;
+        }
+        .landing-hero h1 {
+            font-size: 4rem;
+            font-weight: 900;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #1db954, #1ed760);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .landing-hero p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin-bottom: 2rem;
+        }
+        .landing-hero .btn-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .landing-hero .btn-group .btn {
+            padding: 0.8rem 2rem;
+            font-size: 1rem;
+        }
+        .landing-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            padding: 3rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .landing-features .feature {
+            background: var(--bg-card);
+            padding: 2rem;
+            border-radius: var(--radius);
+            text-align: center;
+            border: 1px solid var(--border-glass);
+        }
+        .landing-features .feature i {
+            font-size: 2.5rem;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+        .landing-features .feature h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+        .landing-features .feature p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        .landing-footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border-glass);
+        }
+        @media (max-width: 768px) {
+            .landing-hero h1 { font-size: 2.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <a href="index.html" class="header-brand">
+            <img src="https://cdn.jsdelivr.net/gh/iloveyoujustyou13-debug/melodify--music@main/Ff_Arpon_cover.png" alt="Melodify" />
+            <span class="brand-text">Melodify</span>
+        </a>
+        <div class="header-actions">
+            <button class="btn-icon theme-toggle" id="themeToggle"><i class="fas fa-moon"></i></button>
+            <a href="login.html" class="btn btn-primary">Sign In</a>
+            <a href="main.html" class="btn">Browse</a>
+        </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="landing-hero container">
+        <h1>Feel the Music</h1>
+        <p>Discover, stream, and share your favorite tracks. Melodify brings you a seamless music experience with a stunning interface.</p>
+        <div class="btn-group">
+            <a href="main.html" class="btn btn-primary"><i class="fas fa-play"></i> Start Listening</a>
+            <a href="login.html" class="btn"><i class="fas fa-user-plus"></i> Join Now</a>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="landing-features">
+        <div class="feature">
+            <i class="fas fa-music"></i>
+            <h3>High Quality Audio</h3>
+            <p>Stream your favorite tracks in crystal clear quality.</p>
+        </div>
+        <div class="feature">
+            <i class="fas fa-heart"></i>
+            <h3>Personalized Playlists</h3>
+            <p>Create and share playlists tailored to your taste.</p>
+        </div>
+        <div class="feature">
+            <i class="fas fa-users"></i>
+            <h3>Community Driven</h3>
+            <p>Discover what others are listening to and explore new music.</p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="landing-footer">
+        <p>© 2026 Melodify. All rights reserved.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
