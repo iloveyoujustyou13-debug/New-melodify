@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard · Melodify</title>
+    <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/iloveyoujustyou13-debug/melodify--music@main/Ff_Arpon_cover.png" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800;14..32,900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+    <style>
+        .dashboard-page {
+            padding-top: var(--header-height);
+            padding-bottom: 2rem;
+        }
+        .dashboard-page .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1.5rem;
+        }
+        .dashboard-page .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .dashboard-page .admin-header h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        .dashboard-page .admin-header .admin-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .dashboard-page .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .dashboard-page .stats-grid .stat {
+            background: var(--bg-card);
+            padding: 1.2rem;
+            border-radius: var(--radius);
+            text-align: center;
+            border: 1px solid var(--border-glass);
+        }
+        .dashboard-page .stats-grid .stat .number {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+        .dashboard-page .stats-grid .stat .label {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .dashboard-page .tabs {
+            display: flex;
+            gap: 0.3rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            border-bottom: 1px solid var(--border-glass);
+            padding-bottom: 0.5rem;
+        }
+        .dashboard-page .tabs .tab-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-family: var(--font);
+            font-weight: 500;
+            font-size: 0.85rem;
+            padding: 0.5rem 1.2rem;
+            border-radius: var(--radius-full);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .dashboard-page .tabs .tab-btn:hover {
+            color: var(--text-primary);
+            background: var(--bg-card);
+        }
+        .dashboard-page .tabs .tab-btn.active {
+            color: #000;
+            background: var(--accent);
+            font-weight: 600;
+        }
+        .dashboard-page .tab-content {
+            display: none;
+            animation: fadeUp 0.25s ease;
+        }
+        .dashboard-page .tab-content.active {
+            display: block;
+        }
+        .dashboard-page .admin-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        .dashboard-page .admin-form .full-width {
+            grid-column: 1 / -1;
+        }
+        .dashboard-page .admin-form label {
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            display: block;
+            margin-bottom: 0.2rem;
+        }
+        .dashboard-page .admin-form input,
+        .dashboard-page .admin-form select,
+        .dashboard-page .admin-form textarea {
+            width: 100%;
+            padding: 0.6rem 0.8rem;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-glass);
+            background: var(--bg-highlight);
+            color: var(--text-primary);
+            font-size: 0.85rem;
+            outline: none;
+            transition: var(--transition);
+        }
+        .dashboard-page .admin-form input:focus,
+        .dashboard-page .admin-form select:focus,
+        .dashboard-page .admin-form textarea:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px var(--accent-glow);
+        }
+        .dashboard-page .admin-form .file-drop-zone {
+            border: 2px dashed var(--border-glass);
+            border-radius: var(--radius-sm);
+            padding: 1.2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+        }
+        .dashboard-page .admin-form .file-drop-zone:hover {
+            border-color: var(--accent);
+        }
+        .dashboard-page .admin-form .file-drop-zone input[type="file"] {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+        .dashboard-page .admin-form .file-drop-zone .icon {
+            font-size: 1.5rem;
+            color: var(--text-muted);
+        }
+        .dashboard-page .admin-form .file-drop-zone .text {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+        .dashboard-page .admin-song-list .song-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.6rem 0;
+            border-bottom: 1px solid var(--border-glass);
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .dashboard-page .admin-song-list .song-item .info .title {
+            font-weight: 500;
+        }
+        .dashboard-page .admin-song-list .song-item .info .artist {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+        .dashboard-page .admin-song-list .song-item .info .meta {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            display: flex;
+            gap: 0.8rem;
+            margin-top: 0.1rem;
+        }
+        .dashboard-page .admin-song-list .song-item .actions {
+            display: flex;
+            gap: 0.3rem;
+        }
+        .dashboard-page .batch-upload .row {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-sm);
+            padding: 0.8rem;
+            margin-bottom: 0.8rem;
+        }
+        .dashboard-page .batch-upload .row .row-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.4rem;
+        }
+        .dashboard-page .batch-upload .row .row-fields {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 0.6rem;
+        }
+        .dashboard-page .batch-upload .row .row-files {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.6rem;
+            margin-top: 0.4rem;
+        }
+        .dashboard-page .batch-upload .row .row-status {
+            margin-top: 0.4rem;
+            font-size: 0.75rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: var(--radius-sm);
+            background: var(--bg-glass);
+            border-left: 3px solid var(--text-muted);
+        }
+        .dashboard-page .batch-upload .row .row-status.success { border-left-color: var(--accent); }
+        .dashboard-page .batch-upload .row .row-status.error { border-left-color: #ef4444; }
+        .dashboard-page .batch-summary {
+            margin-top: 1rem;
+            padding: 0.8rem;
+            border-radius: var(--radius-sm);
+            background: rgba(29,185,84,0.08);
+            border: 1px solid rgba(29,185,84,0.15);
+            display: none;
+        }
+        .dashboard-page .batch-summary.show { display: block; }
+        .dashboard-page .back-link {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: var(--transition);
+        }
+        .dashboard-page .back-link:hover { color: var(--text-primary); }
+        @keyframes fadeUp { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+    </style>
+</head>
+<body>
+    <div class="dashboard-page">
+        <header class="header">
+            <a href="index.html" class="header-brand">
+                <img src="https://cdn.jsdelivr.net/gh/iloveyoujustyou13-debug/melodify--music@main/Ff_Arpon_cover.png" alt="Melodify" />
+                <span class="brand-text">Melodify</span>
+            </a>
+            <div class="header-actions">
+                <button class="btn-icon theme-toggle" id="themeToggle"><i class="fas fa-moon"></i></button>
+                <a href="main.html" class="btn btn-sm"><i class="fas fa-music"></i> Player</a>
+                <a href="index.html" class="btn btn-sm">Home</a>
+                <button class="btn btn-sm btn-danger" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </div>
+        </header>
+
+        <div class="container">
+            <div class="admin-header">
+                <h1><i class="fas fa-crown" style="color:var(--accent);"></i> Admin Dashboard</h1>
+                <div class="admin-actions">
+                    <button class="btn btn-primary" id="seedRandomBtn"><i class="fas fa-dice"></i> Seed Counts</button>
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="stats-grid" id="adminStats">
+                <div class="stat"><div class="number" id="statSongs">0</div><div class="label">Songs</div></div>
+                <div class="stat"><div class="number" id="statDownloads">0</div><div class="label">Downloads</div></div>
+                <div class="stat"><div class="number" id="statCategories">0</div><div class="label">Categories</div></div>
+                <div class="stat"><div class="number" id="statTotalLikes">0</div><div class="label">Likes</div></div>
+                <div class="stat"><div class="number" id="statTotalViews">0</div><div class="label">Views</div></div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="tab-add"><i class="fas fa-plus-circle"></i> Add Song</button>
+                <button class="tab-btn" data-tab="tab-batch"><i class="fab fa-github"></i> Batch Upload</button>
+                <button class="tab-btn" data-tab="tab-manage"><i class="fas fa-list"></i> Manage</button>
+            </div>
+
+            <!-- Tab: Add Song -->
+            <div class="tab-content active" id="tab-add">
+                <form class="admin-form" id="uploadForm">
+                    <div><label>Song Title *</label><input type="text" id="songTitle" required /></div>
+                    <div><label>Artist *</label><input type="text" id="songArtist" required /></div>
+                    <div><label>Category *</label><input type="text" id="songCategory" required /></div>
+                    <div><label>Audio CDN URL *</label><input type="url" id="songAudioUrl" required /></div>
+                    <div><label>Cover CDN URL *</label><input type="url" id="songThumbUrl" required /></div>
+                    <div class="full-width"><label>Lyrics</label><textarea id="songLyrics" rows="3"></textarea></div>
+                    <div class="full-width" style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save Song</button>
+                        <button type="reset" class="btn">Clear</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Tab: Batch Upload -->
+            <div class="tab-content" id="tab-batch">
+                <form id="githubBatchForm" class="admin-form">
+                    <div><label>GitHub Token</label><input type="password" id="ghToken" required /></div>
+                    <div><label>Repository Owner</label><input type="text" id="ghOwner" required /></div>
+                    <div><label>Repository Name</label><input type="text" id="ghRepo" required /></div>
+                    <div><label>Branch</label><input type="text" id="ghBranch" value="main" /></div>
+                    <div class="full-width">
+                        <label><input type="checkbox" id="ghSaveCreds" checked /> Save credentials</label>
+                        <button type="button" class="btn btn-sm" id="clearGhCreds">Clear saved</button>
+                    </div>
+                    <div class="full-width" id="songRowsContainer">
+                        <div id="songRows"></div>
+                        <button type="button" class="btn" id="addSongRow"><i class="fas fa-plus-circle"></i> Add Song</button>
+                    </div>
+                    <div class="full-width" style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+                        <button type="submit" class="btn btn-primary" id="ghBatchUploadBtn"><i class="fab fa-github"></i> Upload All</button>
+                        <button type="reset" class="btn">Clear All</button>
+                    </div>
+                    <div class="full-width batch-summary" id="batchSummary">
+                        <div class="summary-header"><i class="fas fa-check-circle"></i> Upload complete</div>
+                        <div class="summary-details" id="batchSummaryDetails"></div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Tab: Manage -->
+            <div class="tab-content" id="tab-manage">
+                <div class="admin-song-list" id="adminSongList"></div>
+            </div>
+
+            <a href="main.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Player</a>
+        </div>
+    </div>
+
+    <script type="importmap">
+        {
+            "imports": {
+                "firebase/app": "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js",
+                "firebase/auth": "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js",
+                "firebase/firestore": "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"
+            }
+        }
+    </script>
+    <script src="script.js"></script>
+</body>
+</html>
